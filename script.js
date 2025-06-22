@@ -159,16 +159,33 @@ async function handleConvert() {
     
     // Show loading state
     showLoadingState();
-    
+
+    const formData = new FormData();
+    formData.append('video', selectedFile);
+    formData.append('style', selectedStyle);
+
     try {
-        // Simulate conversion process
-        await simulateConversion();
+        const response = await fetch('/convert', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Conversion failed: ${errorText}`);
+        }
+
+        const result = await response.json();
         
-        // Show result
-        showConversionResult();
-        
+        if (result.success) {
+            showConversionResult(result.downloadUrl);
+        } else {
+            throw new Error('Conversion returned an error.');
+        }
+
     } catch (error) {
-        showError('Conversion failed. Please try again.');
+        console.error(error);
+        showError(error.message || 'Conversion failed. Please try again.');
         hideLoadingState();
     }
 }
@@ -342,15 +359,19 @@ function drawWatercolorStyle(ctx, centerX, centerY, time) {
 }
 
 // Show conversion result
-function showConversionResult() {
+function showConversionResult(downloadUrl) {
     hideLoadingState();
     
-    // Create video URL for result
-    const resultVideoURL = URL.createObjectURL(convertedVideoBlob);
-    resultVideo.src = resultVideoURL;
+    // Set video source to the converted video URL from the server
+    resultVideo.src = downloadUrl;
     
     // Show result section
     resultSection.style.display = 'block';
+
+    // Update download button
+    downloadBtn.onclick = () => {
+        window.open(downloadUrl, '_blank');
+    };
     
     // Scroll to result
     resultSection.scrollIntoView({ behavior: 'smooth' });
@@ -361,18 +382,24 @@ function showConversionResult() {
 
 // Handle download
 function handleDownload() {
-    if (convertedVideoBlob) {
-        const url = URL.createObjectURL(convertedVideoBlob);
+    // This function is now primarily handled by the new `onclick` handler
+    // set in `showConversionResult`. We'll keep it for clarity.
+    const downloadUrl = resultVideo.src;
+    if (downloadUrl) {
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `animated_${selectedFile.name.replace(/\.[^/.]+$/, '')}_${selectedStyle}.webm`;
+        a.href = downloadUrl;
+        // The 'download' attribute might not work for cross-origin URLs,
+        // so opening in a new tab is a more reliable way to let the user save.
+        a.target = '_blank';
+        // The filename is now set by the server.
+        // a.download = `animated_${selectedFile.name.replace(/\.[^/.]+$/, '')}_${selectedStyle}.mp4`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
         
-        // Show success message
-        showSuccess('Video downloaded successfully!');
+        showSuccess('Your download will start shortly!');
+    } else {
+        showError('No video to download.');
     }
 }
 
