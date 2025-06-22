@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Animator - Convert Videos to Animation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">
+                <span class="neon-text">Video</span> 
+                <span class="neon-text-alt">Animator</span>
+            </h1>
+            <p class="subtitle">Transform your videos into stunning animations</p>
+        </header>
+
+        <main class="main-content">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L12 16M12 2L8 6M12 2L16 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3 15V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="upload-title">Upload Your Video</h3>
+                    <p class="upload-description">Drag and drop your video file here or click to browse</p>
+                    <input type="file" id="videoInput" accept="video/*" class="file-input" />
+                    <button class="browse-btn" onclick="document.getElementById('videoInput').click()">
+                        Choose File
+                    </button>
+                </div>
+            </div>
+
+            <div class="video-preview" id="videoPreview" style="display: none;">
+                <h3 class="preview-title">Video Preview</h3>
+                <video id="previewVideo" controls class="preview-video">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-info" id="videoInfo"></div>
+            </div>
+
+            <div class="controls-section">
+                <div class="animation-options">
+                    <h3 class="options-title">Animation Style</h3>
+                    <div class="option-grid">
+                        <div class="option-card" data-style="cartoon">
+                            <div class="option-icon">🎨</div>
+                            <span>Cartoon</span>
+                        </div>
+                        <div class="option-card" data-style="anime">
+                            <div class="option-icon">🌸</div>
+                            <span>Anime</span>
+                        </div>
+                        <div class="option-card" data-style="pixel">
+                            <div class="option-icon">👾</div>
+                            <span>Pixel Art</span>
+                        </div>
+                        <div class="option-card" data-style="watercolor">
+                            <div class="option-icon">🎨</div>
+                            <span>Watercolor</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="convert-btn" id="convertBtn" disabled>
+                    <span class="btn-text">Convert to Animation</span>
+                    <div class="btn-loader" style="display: none;">
+                        <div class="spinner"></div>
+                        <span>Converting...</span>
+                    </div>
+                </button>
+            </div>
+
+            <div class="result-section" id="resultSection" style="display: none;">
+                <h3 class="result-title">Animation Complete!</h3>
+                <div class="result-video-container">
+                    <video id="resultVideo" controls class="result-video">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <button class="download-btn" id="downloadBtn">
+                    <span class="download-icon">⬇️</span>
+                    Download Animated Video
+                </button>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Video Animator. Transform your videos into amazing animations!</p>
+        </footer>
+    </div>
+
+    <div class="background-animation">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
