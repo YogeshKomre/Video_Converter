@@ -151,7 +151,7 @@ function getVideoDuration(video) {
 }
 
 // Handle convert button click
-async function handleConvert() {
+function handleConvert() {
     if (!selectedFile) {
         showError('Please select a video file first.');
         return;
@@ -159,19 +159,36 @@ async function handleConvert() {
     
     // Show loading state
     showLoadingState();
-    
-    // Simulate a delay for the conversion process
-    setTimeout(() => {
-        try {
-            // In this simulation, we'll just reuse the original video
-            // to show the result section.
-            const originalVideoURL = URL.createObjectURL(selectedFile);
-            showConversionResult(originalVideoURL);
-        } catch (error) {
-            showError('An error occurred during the simulation.');
-            hideLoadingState();
+
+    const formData = new FormData();
+    formData.append('video', selectedFile);
+    formData.append('style', selectedStyle);
+
+    fetch('http://127.0.0.1:5000/convert', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            // Try to get error message from backend
+            return response.json().then(err => {
+                throw new Error(err.error || 'Conversion failed.');
+            });
         }
-    }, 2500); // Simulate a 2.5 second conversion
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showConversionResult(data.downloadUrl);
+        } else {
+            throw new Error(data.error || 'Conversion failed to return a valid URL.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showError(error.message);
+        hideLoadingState();
+    });
 }
 
 // Show loading state
